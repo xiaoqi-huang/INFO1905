@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.util.NoSuchElementException"/>
+<fullyQualifiedTypeName name="java.util.Deque"/>
+<fullyQualifiedTypeName name="LinkedBinaryTree.Node"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="java.util.Date"/>
+<fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
+<fullyQualifiedTypeName name="BstSimpleSortedMap.MySimpleEntry"/>
+<fullyQualifiedTypeName name="java.util.TreeMap"/>
+<fullyQualifiedTypeName name="java.sql.Date"/>
+<fullyQualifiedTypeName name="java.util.Set"/>
+<fullyQualifiedTypeName name="java.util.HashSet"/>
+<fullyQualifiedTypeName name="org.junit.Rule"/>
+<fullyQualifiedTypeName name="org.junit.rules.ExpectedException"/>
+<fullyQualifiedTypeName name="IntegerHashMap.HashMapEntry"/>
+<fullyQualifiedTypeName name="IntegerHashMap"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="textbook.Graph"/>
+<fullyQualifiedTypeName name="textbook.Vertex"/>
+<fullyQualifiedTypeName name="textbook.AdjacencyMapGraph"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.util.Arrays"/>
+<fullyQualifiedTypeName name="java.util.Collections"/>
+<fullyQualifiedTypeName name="java.util.PriorityQueue"/>
+<fullyQualifiedTypeName name="java.util.AbstractMap.SimpleEntry"/>
+<fullyQualifiedTypeName name="java.util.Comparator"/>
+<fullyQualifiedTypeName name="java.util.Stack"/>
+</qualifiedTypeNameHistroy>

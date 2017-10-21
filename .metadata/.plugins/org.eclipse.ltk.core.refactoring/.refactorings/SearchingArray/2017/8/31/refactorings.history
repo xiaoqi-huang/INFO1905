@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move 4 elements to &apos;SearchingArray/src&apos;&#x0A;- Original project: &apos;SearchingArray&apos;&#x0A;- Destination element: &apos;SearchingArray/src&apos;&#x0A;- Original elements:&#x0A;     BinarySearchableArray.java&#x0A;     LinearSearchableArray.java&#x0A;     SearchableArray.java&#x0A;     ComparisonCounter.java&#x0A;- Update references to refactored element" description="Move files" destination="/src" element1="BinarySearchableArray.java" element2="LinearSearchableArray.java" element3="SearchableArray.java" element4="ComparisonCounter.java" files="4" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1501801050858" units="0" version="1.0"/>
+</session>

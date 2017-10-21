@@ -1,0 +1,145 @@
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import textbook.*;
+
+public class TravelDestinations {
+
+	private Graph<String, Integer> graph;
+
+	public TravelDestinations(Graph<String, Integer> graph) {
+		this.graph = graph;
+	}
+
+	/**
+	 * Return all the countries that are a single direct flight away from the
+	 * given country, in any order. If no flights depart this country, return an
+	 * empty List.
+	 */
+	 public List<String> getDirectDestinations(String fromCountry) {
+		 Vertex<String> origin = getVertex(fromCountry);
+		 if (origin == null) {
+			 return new ArrayList<String>();
+		 }
+		 Iterable<Edge<Integer>> flights = (Iterable<Edge<Integer>>) this.graph.outgoingEdges(origin);
+		 ArrayList<String> destinations = new ArrayList<String>();
+		 for (Edge<Integer> f : flights) {
+			 destinations.add(this.graph.opposite(origin, f).getElement());
+		 }
+		 return destinations;
+	 }
+
+	/**
+	 * Return true if there is a direct flight from 'fromCountry' to
+	 * 'toCountry'. Otherwise, return false.
+	 */
+	public boolean isDirectFlight(String fromCountry, String toCountry) {
+		Vertex<String> origin = getVertex(fromCountry);
+		Vertex<String> destination = getVertex(toCountry);
+		if (origin == null || destination == null) {
+			return false;
+		}
+		return (this.graph.getEdge(origin, destination) != null);
+	}
+
+	/**
+	 * Return all the countries that are reachable from the given country, using
+	 * any number of flights (for example, if we can fly from A to B, then from
+	 * B to C, then we can say that both B and C are reachable from A.
+	 */
+	public List<String> getReachableDestinations(String country) {
+		Vertex<String> origin = getVertex(country);
+		if (origin == null) {
+			return new ArrayList<String>();
+		}
+		ArrayList<Vertex<String>> visited = new ArrayList<Vertex<String>>();
+		DFS(graph, origin, visited);
+		ArrayList<String> reachable = new ArrayList<String>();
+		for (Vertex<String> v : visited) {
+			if (v.getElement() != country) {
+				reachable.add(v.getElement());
+			}
+		}
+		return reachable;
+	}
+
+	/**
+	 * Return the country ('destinationA' or 'destinationB') which requires
+	 * fewer flights to travel to from country 'current'
+	 */
+	public String closerDestination(String current, String destinationA, String destinationB) {
+		if (getVertex(current) == null || getVertex(destinationA) == null || getVertex(destinationB) == null) {
+			return null;
+		}
+		Vertex<String> origin = getVertex(current);
+		ArrayList<Vertex<String>> visited = new ArrayList<Vertex<String>>();
+		ArrayList<Vertex<String>> currentLevel = new ArrayList<Vertex<String>>();
+		visited.add(origin);
+		currentLevel.add(origin);
+		while (!currentLevel.isEmpty()) {
+			ArrayList<Vertex<String>> nextLevel = new ArrayList<Vertex<String>>();
+			for (Vertex<String> v : currentLevel) {
+				for (Edge<Integer> e : graph.outgoingEdges(v)) {
+					Vertex<String> toVisit = graph.opposite(v, e);
+					if (!visited.contains(toVisit)) {
+						if (toVisit.getElement() == destinationA) {
+							return destinationA;
+						}
+						if (toVisit.getElement() == destinationB) {
+							return destinationB;
+						}
+						visited.add(toVisit);
+						nextLevel.add(toVisit);
+					}
+				}
+			}
+			currentLevel = nextLevel;
+		}
+		return null;
+	}
+
+	/**
+     * Return the name of the country reached by the cheapest direct flight from
+     * fromCountry. If there is a tie, return any destination with that minimal
+     * price. If no flights depart this country, return null
+     */
+	public String cheapestDirectFlight(String fromCountry) {
+        if (getVertex(fromCountry) == null) return null;
+		Vertex<String> origin = getVertex(fromCountry);
+		Iterable<Edge<Integer>> flights = (Iterable<Edge<Integer>>) this.graph.outgoingEdges(origin);
+		if (flights.isEmpty()) {
+			return null;
+		}
+		Integer cheapest = null;
+		for (Edge<Integer> e : flights) {
+			if (cheapest == null || e.getElement() < cheapest.getElement()) {
+				cheapest = e;
+			}
+		}
+		return graph.opposite(origin, cheapest);
+    }
+
+	private Vertex<String> getVertex(String country) {
+		PositionalList<Vertex<String>> countries = (PositionalList<Vertex<String>>) this.graph.vertices();
+		if (countries.isEmpty()) {
+			return null;
+		}
+		for (Vertex<String> c : countries) {
+			if (c.getElement() == country) {
+				return c;
+			}
+		}
+		return null;
+	}
+
+	private void DFS(Graph<String, Integer> graph, Vertex<String> origin, ArrayList<Vertex<String>> visited) {
+		visited.add(origin);
+		for (Edge<Integer> e : graph.outgoingEdges(origin)) {
+			Vertex<String> toVisit = graph.opposite(origin, e);
+			if (!visited.contains(toVisit)) {
+				DFS(graph, toVisit, visited);
+			}
+		}
+	}
+}

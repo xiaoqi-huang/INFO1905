@@ -1,0 +1,211 @@
+import java.util.ArrayList;
+
+public class LinearHashMap<K, V> implements Map<K, V> {
+
+    class HashMapEntry<K, V> implements Entry<K, V>{
+
+        public K key;
+        public V value;
+
+        public HashMapEntry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+		@Override
+		public K getKey() {
+			return key;
+		}
+
+		@Override
+		public V getValue() {
+			return value;
+		}
+    }
+
+    private HashMapEntry<K, V>[] items;
+    private int numberOfItems;
+
+    private int hash(K key) {
+        return key.hashCode();
+    }
+
+    private int compress(int hash) {
+        return Math.abs(hash) % items.length;
+    }
+
+    @SuppressWarnings("unchecked")
+    public LinearHashMap(int size) {
+        items = (LinearHashMap<K, V>.HashMapEntry<K, V>[]) new LinearHashMap.HashMapEntry[size];
+        this.numberOfItems = 0;
+    }
+
+    @Override
+    public int size() {
+        return numberOfItems;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
+    // 1. Check null
+    // 2. Check DEFUNCT --> DEFUNCT has null key and null value
+    // 3. Check key
+    @Override
+    public V get(K key) {
+		int index = compress(hash(key));
+        for (int i = 0; i < items.length; i++) {
+            index = index % items.length;
+            if (items[index] == null) {
+                return null;
+            }
+            if (isDefunct(items[index])) {
+                index++;
+                continue;
+            }
+            if (items[index].getKey().equals(key)) {
+                return items[index].getValue();
+            } else {
+                index++;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public V put(K key, V value) {
+        if (numberOfItems > ((double)items.length / 2)) {
+            expand();
+        }
+		int index = compress(hash(key));
+        int defunctIndex = -1;
+        for (int i = 0; i < items.length; i++) {
+            index = index % items.length;
+            // When a null is reached,
+            // if there is no defunct, store new item in the end (null)
+            // if there are defuncts, store new item in the first defunct
+            if (items[index] == null) {
+                if (defunctIndex == -1) {
+                    items[index] = new HashMapEntry<K, V>(key, value);
+                } else {
+                    items[defunctIndex] = new HashMapEntry<K, V>(key, value);
+                }
+                this.numberOfItems++;
+                return null;
+            }
+            // Keep the first defunct
+            if (isDefunct(items[index])) {
+                if (defunctIndex == -1) {
+                    defunctIndex = index;
+                }
+                index++;
+            }
+            if (items[index].getKey().equals(key)) {
+                V oldValue = items[index].getValue();
+                items[index] = new HashMapEntry<K, V>(key, value);
+                return oldValue;
+            }
+            if (!items[index].getKey().equals(key)) {
+                index++;
+            }
+        }
+        throw new RuntimeException("Table is full");
+    }
+
+    @Override
+    public V remove(K key) {
+		int index = compress(hash(key));
+        for (int i = 0; i < items.length; i++) {
+            index = index % items.length;
+            if (items[index] == null) {
+                return null;
+            }
+            if (isDefunct(items[index])) {
+                index++;
+                continue;
+            }
+            if (items[index].getKey().equals(key)) {
+                V oldValue = items[index].getValue();
+                items[index] = new HashMapEntry<K, V>(null, null);
+                this.numberOfItems--;
+                return oldValue;
+            } else {
+                index++;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Iterable<K> keySet() {
+        if (isEmpty()) {
+            return new ArrayList<K>();
+        }
+        ArrayList<K> keys = new ArrayList<K>();
+        for (HashMapEntry<K, V> e : this.items) {
+            if (e != null && !isDefunct(e)) {
+                keys.add(e.getKey());
+            }
+        }
+        return keys;
+    }
+
+    @Override
+    public Iterable<V> values() {
+        if (isEmpty()) {
+            return new ArrayList<V>();
+        }
+        ArrayList<V> values = new ArrayList<V>();
+        for (HashMapEntry<K, V> e : this.items) {
+            if (e != null && !isDefunct(e)) {
+                values.add(e.getValue());
+            }
+        }
+        return values;
+    }
+
+    @Override
+    public Iterable<Entry<K, V>> entrySet() {
+        if (isEmpty()) {
+            return new ArrayList<Entry<K, V>>();
+        }
+        ArrayList<Entry<K, V>> entries = new ArrayList<Entry<K, V>>();
+        for (HashMapEntry<K, V> e : this.items) {
+            if (e != null && !isDefunct(e)) {
+                entries.add(e);
+            }
+        }
+        return entries;
+    }
+
+    private boolean isDefunct(HashMapEntry e) {
+        return (e.getKey() == null) && (e.getValue() == null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void expand() {
+         HashMapEntry<K, V>[] newItems = (LinearHashMap<K, V>.HashMapEntry<K, V>[]) new LinearHashMap.HashMapEntry[items.length * 2];
+         int index = -1;
+         for (HashMapEntry<K, V> e : this.items) {
+             if (e != null && !isDefunct(e)) {
+                 index = compress(hash(e.getKey()));
+                 newItems[index] = e;
+             }
+         }
+         this.items = newItems;
+    }
+
+    private void copyToNewItems(HashMapEntry<K, V>[] newItems, HashMapEntry<K, V> e) {
+        int index = Math.abs(hash(e.getKey())) % newItems.length;
+        while (true) {
+            index = index % newItems.length;
+            if (newItems[index] == null) {
+                newItems[index] = e;
+            } else {
+                index++;
+            }
+        }
+    }
+}

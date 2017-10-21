@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+		<item value="/Users/xiaoqi/Documents/USYD/2017 - Year 1 - Semester 2/INFO1905/workspace/AdjacencyMapGraph"/>
+		<item value="/Users/xiaoqi/Downloads/src"/>
+	</list>
+	<section name="ExternalProjectImportWizard">
+		<item value="true" key="WizardProjectsImportPage.STORE_NESTED_PROJECTS"/>
+		<item value="true" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
+		<item value="true" key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED"/>
+		<list key="WizardProjectsImportPage.STORE_DIRECTORIES">
+			<item value=""/>
+		</list>
+		<list key="WizardProjectsImportPage.STORE_ARCHIVES">
+			<item value="/Users/huangxiaoqi/Desktop/HelloWorld.zip"/>
+		</list>
+	</section>
+</section>
