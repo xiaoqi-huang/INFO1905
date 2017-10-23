@@ -43,11 +43,12 @@
 - ChainingHashMap
 
 ### Graphs
-- TravelDestinations
 - AdjacencyMapGraph
+- AdjacencyMatrixGraph
 
 ### Weighted graphs and shortest paths
 - TravelDestinations
 
 ## Assignments
-### Assignment 1 - Assignment
+### Assignment 1
+### Assignment 2
