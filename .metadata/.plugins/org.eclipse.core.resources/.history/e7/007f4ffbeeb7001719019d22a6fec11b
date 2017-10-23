@@ -1,5 +1,4 @@
 import java.util.HashMap;
-import java.util.Map.Entry;
 
 import textbook.LinkedBinaryTree;
 import textbook.LinkedQueue;
@@ -47,41 +46,6 @@ public class Assignment {
  			result = leftOperand * rightOperand;
  		}
  		return String.valueOf(result);
-	}
-
-	private static String calculateFancy(Position<String> root, Position<String> left, Position<String> right) {
-		String rootElement = root.getElement();
-		String leftElement = left.getElement();
-		String rightElement = right.getElement();
-
-		if (rootElement.equals("*")) {
-			if (leftElement.equals("1") && isVariable(right)) {
-				return rightElement;
-			}
-			if (isVariable(left) && rightElement.equals("1")) {
-				return leftElement;
-			}
-			if ((leftElement.equals("0") && isVariable(right)) || (isVariable(left) && rightElement.equals("0"))) {
-				return "0";
-			}
-		}
-		if (rootElement.equals("+")) {
-			if (leftElement.equals("0") && isVariable(right)) {
-				return rightElement;
-			}
-			if ((isVariable(left) && rightElement.equals("0"))) {
-				return leftElement;
-			}
-		}
-		if (rootElement.equals("-")) {
-			if ((isVariable(left) && rightElement.equals("0"))) {
-				return leftElement;
-			}
-			if (isVariable(left) && isVariable(right) && left.getElement().equals(right.getElement())) {
-				return "0";
-			}
-		}
-		return null;
 	}
 
 	/***************************************************************************
@@ -225,17 +189,17 @@ public class Assignment {
 		if (tree == null) {
 			throw new IllegalArgumentException("Tree was null");
 		}
-		if (!isArithmeticExpression(tree)) {
-			throw new IllegalArgumentException();
-		}
 		Position<String> root = tree.root();
 		return tree2prefix(tree, root);
 	}
 
 	private static String tree2prefix(LinkedBinaryTree<String> tree, Position<String> root) throws IllegalArgumentException {
-		String element = root.getElement();
+		if (root == null) {
+			throw new IllegalArgumentException();
+		}
+		String element = tree.root().getElement();
 		if (isOperator(element)) {
-			return element + " " + tree2prefix(tree, tree.left(root)) + " " + tree2prefix(tree, tree.right(root));
+			return element + " " + tree2prefix(tree, tree.left(root)) + " " + tree2prefix(tree, tree.right(root)) + " ";
 		}
 		return element;
 	}
@@ -267,17 +231,17 @@ public class Assignment {
 		if (tree == null) {
 			throw new IllegalArgumentException("Tree was null");
 		}
-		if (!isArithmeticExpression(tree)) {
-			throw new IllegalArgumentException();
-		}
 		Position<String> root = tree.root();
 		return tree2infix(tree, root);
 	}
 
 	private static String tree2infix(LinkedBinaryTree<String> tree, Position<String> root) throws IllegalArgumentException {
-		String element = root.getElement();
+		if (root == null) {
+			throw new IllegalArgumentException();
+		}
+		String element = tree.root().getElement();
 		if (isOperator(element)) {
-			return "(" + tree2infix(tree, tree.left(root)) + element + tree2infix(tree, tree.right(root)) + ")";
+			return "(" + tree2prefix(tree, tree.left(root)) + " " + element + " " + tree2prefix(tree, tree.right(root)) + ")";
 		}
 		return element;
 	}
@@ -365,9 +329,6 @@ public class Assignment {
 		if (tree == null) {
 			throw new IllegalArgumentException("Tree was null");
 		}
-		if (!isArithmeticExpression(tree)) {
-			throw new IllegalArgumentException();
-		}
 		Position<String> root = tree.root();
 		return simplifyFancy(tree, root);
 	}
@@ -376,15 +337,29 @@ public class Assignment {
 		if (root == null) {
 			throw new IllegalArgumentException();
 		}
+		if (tree.numChildren(root) == 1) {
+			throw new IllegalArgumentException();
+		}
+
 		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
 
 		if (tree.isExternal(root)) {
-			subtree.addRoot(root.getElement());
-			return subtree;
+			if (isOperator(root)) {
+				throw new IllegalArgumentException();
+			} else {
+				subtree.addRoot(root.getElement());
+				return subtree;
+			}
 		}
 
-		LinkedBinaryTree<String> leftTree = simplifyFancy(tree, tree.left(root));
-		LinkedBinaryTree<String> rightTree = simplifyFancy(tree, tree.right(root));
+		if (!isOperator(root)) {
+			throw new IllegalArgumentException();
+		}
+
+		Position<String> left = tree.left(root);
+		Position<String> right = tree.right(root);
+		LinkedBinaryTree<String> leftTree = simplify(tree, left);
+		LinkedBinaryTree<String> rightTree = simplify(tree, right);
 		if (isInteger(leftTree.root()) && isInteger(rightTree.root())) {
 			String newElement = calculate(root, leftTree.root(), rightTree.root());
 			subtree.addRoot(newElement);
@@ -398,6 +373,38 @@ public class Assignment {
 		subtree.addRoot(root.getElement());
 		subtree.attach(subtree.root(), leftTree, rightTree);
 		return subtree;
+	}
+
+
+	private static String calculateFancy(Position<String> root, Position<String> left, Position<String> right) {
+		if (root.getElement() == "*") {
+			if (left.getElement() == "1" && isVariable(right)) {
+				return right.getElement();
+			}
+			if (isVariable(left) && right.getElement() == "1") {
+				return right.getElement();
+			}
+			if ((left.getElement() == "0" && isVariable(right)) || (isVariable(left) && right.getElement() == "0")) {
+				return "0";
+			}
+		}
+		if (root.getElement() == "+") {
+			if (left.getElement() == "0" && isVariable(right)) {
+				return right.getElement();
+			}
+			if ((isVariable(left) && right.getElement() == "0")) {
+				return left.getElement();
+			}
+		}
+		if (root.getElement() == "-") {
+			if ((isVariable(left) && right.getElement() == "0")) {
+				return left.getElement();
+			}
+			if (isVariable(left) && isVariable(right) && left.getElement().equals(right.getElement())) {
+				return "0";
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -423,31 +430,12 @@ public class Assignment {
 		if (tree == null || variable == null) {
 			throw new IllegalArgumentException();
 		}
-		if (!isArithmeticExpression(tree)) {
-			throw new IllegalArgumentException();
-		}
 		Position<String> root = tree.root();
 		return substitute(tree, root, variable, value);
 	}
 
-	private static LinkedBinaryTree<String> substitute(LinkedBinaryTree<String> tree, Position<String> root, String variable, int value) throws IllegalArgumentException {
-		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
-
-		if (tree.isExternal(root)) {
-			if (root.getElement().equals(variable)) {
-				String newElement = String.valueOf(value);
-				subtree.addRoot(newElement);
-				return subtree;
-			}
-			subtree.addRoot(root.getElement());
-			return subtree;
-		}
-
-		LinkedBinaryTree<String> leftTree = substitute(tree, tree.left(root), variable, value);
-		LinkedBinaryTree<String> rightTree = substitute(tree, tree.right(root), variable, value);
-		subtree.addRoot(root.getElement());
-		subtree.attach(subtree.root(), leftTree, rightTree);
-		return subtree;
+	public static LinkedBinaryTree<String> substitute(LinkedBinaryTree<String> tree, String variable, int value) throws IllegalArgumentException {
+		
 	}
 
 	/**
@@ -468,40 +456,9 @@ public class Assignment {
 	 *             to substitute a null into the tree
 	 */
 	public static LinkedBinaryTree<String> substitute(LinkedBinaryTree<String> tree, HashMap<String, Integer> map)
-	throws IllegalArgumentException {
-		if (tree == null || map == null) {
-			throw new IllegalArgumentException();
-		}
-		if (!isArithmeticExpression(tree)) {
-			throw new IllegalArgumentException();
-		}
-		Position<String> root = tree.root();
-		return substitute(tree, root, map);
-	}
-
-	private static LinkedBinaryTree<String> substitute(LinkedBinaryTree<String> tree, Position<String> root, HashMap<String, Integer> map) throws IllegalArgumentException {
-		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
-
-		if (tree.isExternal(root)) {
-			for (Entry<String, Integer> e : map.entrySet()) {
-				if (root.getElement().equals(e.getKey())) {
-					if (e.getValue() == null) {
-						throw new IllegalArgumentException();
-					}
-					String newElement = String.valueOf(e.getValue());
-					subtree.addRoot(newElement);
-					return subtree;
-				}
-			}
-			subtree.addRoot(root.getElement());
-			return subtree;
-		}
-
-		LinkedBinaryTree<String> leftTree = substitute(tree, tree.left(root), map);
-		LinkedBinaryTree<String> rightTree = substitute(tree, tree.right(root), map);
-		subtree.addRoot(root.getElement());
-		subtree.attach(subtree.root(), leftTree, rightTree);
-		return subtree;
+			throws IllegalArgumentException {
+		// TODO: Implement this method
+		return null;
 	}
 
 	/**
@@ -516,29 +473,8 @@ public class Assignment {
 	 *              arithmetic expression. Otherwise, it returns false
 	 */
 	public static boolean isArithmeticExpression(LinkedBinaryTree<String> tree) {
-		if (tree == null) {
-			return false;
-		}
-		Position<String> root = tree.root();
-		return isArithmeticExpression(tree, root);
+		// TODO: Implement this method
+		return false;
 	}
 
-	private static boolean isArithmeticExpression(LinkedBinaryTree<String> tree, Position<String> root) {
-		if (tree == null || root == null) {
-			throw new IllegalArgumentException();
-		}
-		if (tree.numChildren(root) == 1) {
-			return false;
-		}
-		if (tree.isExternal(root)) {
-			if (isOperator(root)) {
-				return false;
-			}
-			return true;
-		}
-		if (!isOperator(root)) {
-			return false;
-		}
-		return isArithmeticExpression(tree, tree.left(root)) && isArithmeticExpression(tree, tree.right(root));
-	}
 }

@@ -49,41 +49,6 @@ public class Assignment {
  		return String.valueOf(result);
 	}
 
-	private static String calculateFancy(Position<String> root, Position<String> left, Position<String> right) {
-		String rootElement = root.getElement();
-		String leftElement = left.getElement();
-		String rightElement = right.getElement();
-
-		if (rootElement.equals("*")) {
-			if (leftElement.equals("1") && isVariable(right)) {
-				return rightElement;
-			}
-			if (isVariable(left) && rightElement.equals("1")) {
-				return leftElement;
-			}
-			if ((leftElement.equals("0") && isVariable(right)) || (isVariable(left) && rightElement.equals("0"))) {
-				return "0";
-			}
-		}
-		if (rootElement.equals("+")) {
-			if (leftElement.equals("0") && isVariable(right)) {
-				return rightElement;
-			}
-			if ((isVariable(left) && rightElement.equals("0"))) {
-				return leftElement;
-			}
-		}
-		if (rootElement.equals("-")) {
-			if ((isVariable(left) && rightElement.equals("0"))) {
-				return leftElement;
-			}
-			if (isVariable(left) && isVariable(right) && left.getElement().equals(right.getElement())) {
-				return "0";
-			}
-		}
-		return null;
-	}
-
 	/***************************************************************************
 	 * Main methods
 	 ***************************************************************************/
@@ -383,8 +348,8 @@ public class Assignment {
 			return subtree;
 		}
 
-		LinkedBinaryTree<String> leftTree = simplifyFancy(tree, tree.left(root));
-		LinkedBinaryTree<String> rightTree = simplifyFancy(tree, tree.right(root));
+		LinkedBinaryTree<String> leftTree = simplify(tree, left);
+		LinkedBinaryTree<String> rightTree = simplify(tree, right);
 		if (isInteger(leftTree.root()) && isInteger(rightTree.root())) {
 			String newElement = calculate(root, leftTree.root(), rightTree.root());
 			subtree.addRoot(newElement);
@@ -398,6 +363,38 @@ public class Assignment {
 		subtree.addRoot(root.getElement());
 		subtree.attach(subtree.root(), leftTree, rightTree);
 		return subtree;
+	}
+
+
+	private static String calculateFancy(Position<String> root, Position<String> left, Position<String> right) {
+		if (root.getElement() == "*") {
+			if (left.getElement() == "1" && isVariable(right)) {
+				return right.getElement();
+			}
+			if (isVariable(left) && right.getElement() == "1") {
+				return right.getElement();
+			}
+			if ((left.getElement() == "0" && isVariable(right)) || (isVariable(left) && right.getElement() == "0")) {
+				return "0";
+			}
+		}
+		if (root.getElement() == "+") {
+			if (left.getElement() == "0" && isVariable(right)) {
+				return right.getElement();
+			}
+			if ((isVariable(left) && right.getElement() == "0")) {
+				return left.getElement();
+			}
+		}
+		if (root.getElement() == "-") {
+			if ((isVariable(left) && right.getElement() == "0")) {
+				return left.getElement();
+			}
+			if (isVariable(left) && isVariable(right) && left.getElement().equals(right.getElement())) {
+				return "0";
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -485,9 +482,6 @@ public class Assignment {
 		if (tree.isExternal(root)) {
 			for (Entry<String, Integer> e : map.entrySet()) {
 				if (root.getElement().equals(e.getKey())) {
-					if (e.getValue() == null) {
-						throw new IllegalArgumentException();
-					}
 					String newElement = String.valueOf(e.getValue());
 					subtree.addRoot(newElement);
 					return subtree;
@@ -541,4 +535,5 @@ public class Assignment {
 		}
 		return isArithmeticExpression(tree, tree.left(root)) && isArithmeticExpression(tree, tree.right(root));
 	}
+
 }
