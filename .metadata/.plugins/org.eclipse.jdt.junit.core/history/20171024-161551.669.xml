@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="AssignmentTest (1)" project="Assignment 2" tests="21" started="21" failures="0" errors="0" ignored="0">
+  <testsuite name="AssignmentTest" time="0.002">
+    <testcase name="testSubstitute_Complex" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testSimplify1" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testSubstituteMap_SubstitueNull" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testSimplifyFancy_Null" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testIsArithmeticExpression_OneValue" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testIsArithmeticExpression_ComplexInvalid" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testIsArithmeticExpression_OneVariable" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testSimplifyFancy_Simple" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testIsArithmeticExpression_Simple" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testSubstituteMap_Complex" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testIsArithmeticExpression_OneOperator" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testIsArithmeticExpression_ComplexValid" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testSubstituteMap_Simple" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testSubstitute_InvalidTree" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testPrefix2tree" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testIsArithmeticExpression_Null" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testSubstitute_Null" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testSubstitute_Simple" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testSimplifyFancy_InvalidTree" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testSubstituteMap_Null" classname="AssignmentTest" time="0.0"/>
+    <testcase name="testSubstituteMap_InvalidTree" classname="AssignmentTest" time="0.001"/>
+  </testsuite>
+</testrun>

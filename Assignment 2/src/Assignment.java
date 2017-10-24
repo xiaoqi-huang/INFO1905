@@ -7,9 +7,9 @@ import textbook.Position;
 
 public class Assignment {
 
-	/***************************************************************************
+	/* *************************************************************************
 	 * Helper methods
-	 ***************************************************************************/
+	 * ************************************************************************* */
 
 	 private static boolean isOperator(String element) {
 		 return (element.equals("+") || element.equals("-") || element.equals("*"));
@@ -48,6 +48,7 @@ public class Assignment {
 		if (root.getElement().equals("*")) {
 			return String.valueOf(leftOperand * rightOperand);
  		}
+		return null;
 	}
 
 	// Return null if it cannot be simplified
@@ -93,9 +94,9 @@ public class Assignment {
 		return null;
 	}
 
-	/***************************************************************************
+	/* *************************************************************************
 	 * Main methods
-	 ***************************************************************************/
+	 * ************************************************************************* */
 
 	/**
 	 * Convert an arithmetic expression (in prefix notation), to a binary tree
