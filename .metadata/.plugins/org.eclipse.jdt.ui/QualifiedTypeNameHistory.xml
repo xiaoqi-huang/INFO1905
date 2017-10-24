@@ -16,7 +16,6 @@
 <fullyQualifiedTypeName name="IntegerHashMap.HashMapEntry"/>
 <fullyQualifiedTypeName name="IntegerHashMap"/>
 <fullyQualifiedTypeName name="java.util.Map"/>
-<fullyQualifiedTypeName name="java.util.HashMap"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="textbook.Graph"/>
 <fullyQualifiedTypeName name="textbook.Vertex"/>
@@ -29,4 +28,6 @@
 <fullyQualifiedTypeName name="java.util.Comparator"/>
 <fullyQualifiedTypeName name="java.util.Stack"/>
 <fullyQualifiedTypeName name="java.util.Map.Entry"/>
+<fullyQualifiedTypeName name="textbook.Position"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
 </qualifiedTypeNameHistroy>

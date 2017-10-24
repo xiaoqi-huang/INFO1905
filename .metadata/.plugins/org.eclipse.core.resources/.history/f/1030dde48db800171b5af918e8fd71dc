@@ -51,6 +51,72 @@ public class Assignment {
 		return null;
 	}
 
+	// Return null if it cannot be simplified
+	private static LinkedBinaryTree<String> calculateFancy(LinkedBinaryTree<String> tree, Position<String> parent, Position<String> left, Position<String> right) {
+		String flag = null;
+		String parentElement = parent.getElement();
+		String leftElement = left.getElement();
+		String rightElement = right.getElement();
+
+		if (parentElement.equals("*")) {
+			// 1 * x = x
+			if (leftElement.equals("1")) {
+				flag = "right";
+			}
+			// x * 1 = x
+			if (rightElement.equals("1")) {
+				flag = "left";
+			}
+			// 0 * x = 0 / x * 0 = 0
+			if ((leftElement.equals("0") || rightElement.equals("0"))) {
+				flag = "0";
+			}
+		}
+		if (parentElement.equals("+")) {
+			// 0 + x = x
+			if (leftElement.equals("0")) {
+				flag = "right";
+			}
+			// x + 0 = x
+			if ((isVariable(left) && rightElement.equals("0"))) {
+				flag = "left";
+			}
+		}
+		if (parentElement.equals("-")) {
+			// x - 0 = x
+			if ((isVariable(left) && rightElement.equals("0"))) {
+				flag = "left";
+			}
+			// x - x = 0
+			if (isVariable(left) && isVariable(right) && left.getElement().equals(right.getElement())) {
+				flag = "0";
+			}
+		}
+
+		if (flag == null) {
+			return null;
+		}
+
+		if (flag.equals("0")) {
+			tree.remove(left);
+			tree.remove(right);
+			tree.set(parent, "0");
+		} else if (flag.equals("left")) {
+			if (parent = tree.root()) {
+				tree.root() = left;
+			}
+			tree.parent(left) = tree.parent(parent);
+			root = left;
+		} else if (flag.equals("right")) {
+			if (parent = tree.root()) {
+				tree.root() = right;
+			}
+			tree.parent(right) = tree.parent(parent);
+			parent = right;
+		}
+		return tree;
+	}
+
 	/* *************************************************************************
 	 * Main methods
 	 * ************************************************************************* */
@@ -338,51 +404,25 @@ public class Assignment {
 		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
 
 		if (tree.isExternal(root)) {
-			subtree.addRoot(root.getElement());
-			return subtree;
+			return tree;
+
 		}
 
 		LinkedBinaryTree<String> leftTree = simplifyFancy(tree, tree.left(root));
 		LinkedBinaryTree<String> rightTree = simplifyFancy(tree, tree.right(root));
-
 		if (isInteger(leftTree.root()) && isInteger(rightTree.root())) {
 			String newElement = calculate(root, leftTree.root(), rightTree.root());
-			subtree.addRoot(newElement);
-			return subtree;
+			tree.set(root, newElement);
+			tree.remove(leftTree.root());
+			tree.remove(rightTree.root());
+			return tree;
 		}
 
-		if (root.getElement().equals("*")) {
-			if (leftTree.root().getElement().equals("1")) {
-				return rightTree;
-			}
-			if (rightTree.root().getElement().equals("1")) {
-				return leftTree;
-			}
-			if (leftTree.root().getElement().equals("0") || rightTree.root().getElement().equals("0")) {
-				subtree.addRoot("0");
-				return subtree;
-			}
+		LinkedBinaryTree<String> newTree = calculateFancy(tree, root, leftTree.root(), rightTree.root());
+		if (newTree != null) {
+			return newTree;
 		}
-		if (root.getElement().equals("+")) {
-			if (leftTree.root().getElement().equals("0")) {
-				return rightTree;
-			}
-			if (rightTree.root().getElement().equals("0")) {
-				return leftTree;
-			}
-		}
-		if (root.getElement().equals("-")) {
-			if (rightTree.root().getElement().equals("0")) {
-				return leftTree;
-			}
-			if (equals(leftTree, rightTree)) {
-				subtree.addRoot("0");
-				return subtree;
-			}
-		}
-		subtree.addRoot(root.getElement());
-		subtree.attach(subtree.root(), leftTree, rightTree);
-		return subtree;
+		return tree;
 	}
 
 	/**

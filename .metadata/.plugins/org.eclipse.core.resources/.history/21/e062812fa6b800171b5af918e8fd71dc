@@ -204,17 +204,17 @@ public class AssignmentTest {
 	 @Test(timeout = 100)
 	 public void testSimplify_Simple() {
 		 LinkedBinaryTree<String> tree = Assignment.prefix2tree("* 1 2");
-		 LinkedBinaryTree<String> actual = Assignment.simplify(tree);
+		 LinkedBinaryTree<String> actual = Assignment.simplifyFancy(tree);
 		 LinkedBinaryTree<String> expected = Assignment.prefix2tree("2");
 		 assertTrue(Assignment.equals(actual, expected));
 
 		 tree = Assignment.prefix2tree("+ 1 2");
-		 actual = Assignment.simplify(tree);
+		 actual = Assignment.simplifyFancy(tree);
 		 expected = Assignment.prefix2tree("3");
 		 assertTrue(Assignment.equals(actual, expected));
 
 		 tree = Assignment.prefix2tree("- 1 2");
-		 actual = Assignment.simplify(tree);
+		 actual = Assignment.simplifyFancy(tree);
 		 expected = Assignment.prefix2tree("-1");
 		 assertTrue(Assignment.equals(actual, expected));
 	 }
@@ -222,7 +222,7 @@ public class AssignmentTest {
 	 @Test(timeout = 100)
 	 public void testSimplify_Complex() {
 		 LinkedBinaryTree<String> tree = Assignment.prefix2tree("* + * 2 3 5 + - 5 2 x");
-		 LinkedBinaryTree<String> actual = Assignment.simplify(tree);
+		 LinkedBinaryTree<String> actual = Assignment.simplifyFancy(tree);
 		 LinkedBinaryTree<String> expected = Assignment.prefix2tree("* 11 + 3 x");
 		 assertTrue(Assignment.equals(actual, expected));
 	 }
