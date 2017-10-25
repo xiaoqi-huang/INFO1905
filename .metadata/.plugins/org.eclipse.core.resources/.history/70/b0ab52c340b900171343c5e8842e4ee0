@@ -12,35 +12,27 @@ public class Assignment {
 	 * ************************************************************************* */
 
 	 private static boolean isOperator(String element) {
-		 return (element != null) && (element.equals("+") || element.equals("-") || element.equals("*"));
+		 return (element.equals("+") || element.equals("-") || element.equals("*"));
 	 }
 
 	 private static boolean isOperator(Position<String> p) {
-		 return (p != null) && isOperator(p.getElement());
-	 }
-
-	 private static boolean isInteger(String element) {
-		 if (element == null) {
-			 return false;
-		 }
-		 try {
-			 Integer.parseInt(element);
-			 return true;
-		 } catch (Exception e) {
-			 return false;
-		 }
+		 String element = p.getElement();
+		 return (element.equals("+") || element.equals("-") || element.equals("*"));
 	 }
 
 	 private static boolean isInteger(Position<String> p) {
-		 return (p != null) && isInteger(p.getElement());
-	}
-
-	private static boolean isVariable(String element) {
-		return (element != null) && (!isOperator(element) && !isInteger(element));
+  		try {
+  			String element = p.getElement();
+  	        Integer.parseInt(element);
+  	        return true;
+  	    }
+  	    catch (Exception e) {
+  	        return false;
+  	    }
 	}
 
 	private static boolean isVariable(Position<String> p) {
-		return (p != null) && isVariable(p.getElement());
+		return (!isOperator(p) && !isInteger(p));
 	}
 
 	private static String calculate(Position<String> root, Position<String> left, Position<String> right) {
@@ -477,13 +469,13 @@ public class Assignment {
 
 	private static LinkedBinaryTree<String> substitute(LinkedBinaryTree<String> tree, Position<String> root, HashMap<String, Integer> map) throws IllegalArgumentException {
 		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
-		
+
 		if (!isOperator(root)) {
 			for (Entry<String, Integer> e : map.entrySet()) {
-				if ((e == null) || (e.getKey() == null) || (e.getValue() == null) || (!isVariable(e.getKey()))) {
-					throw new IllegalArgumentException();
-				}
 				if (root.getElement().equals(e.getKey())) {
+					if (e.getValue() == null) {
+						throw new IllegalArgumentException();
+					}
 					String newElement = String.valueOf(e.getValue());
 					subtree.addRoot(newElement);
 					return subtree;
@@ -512,7 +504,7 @@ public class Assignment {
 	 *              arithmetic expression. Otherwise, it returns false
 	 */
 	public static boolean isArithmeticExpression(LinkedBinaryTree<String> tree) {
-		if ((tree == null) || (tree.isEmpty())) {
+		if (tree == null) {
 			return false;
 		}
 		Position<String> root = tree.root();

@@ -98,6 +98,14 @@ public class AssignmentTest {
 	 }
 
 	 @Test(timeout = 100)
+	 public void testTree2prefix_Empty() {
+		 LinkedBinaryTree<String> tree = new LinkedBinaryTree<String>();
+
+		 thrown.expect(IllegalArgumentException.class);
+		 Assignment.tree2prefix(tree);
+	 }
+
+	 @Test(timeout = 100)
 	 public void testTree2prefix_InvalidTree() {
 		 LinkedBinaryTree<String> tree = buildTree("+ 1 - + val 1 val");
 
@@ -143,6 +151,14 @@ public class AssignmentTest {
 	 public void testTree2infix_Null() {
 		 thrown.expect(IllegalArgumentException.class);
 		 Assignment.tree2infix(null);
+	 }
+
+	 @Test(timeout = 100)
+	 public void testTree2infix_Empty() {
+		 LinkedBinaryTree<String> tree = new LinkedBinaryTree<String>();
+
+		 thrown.expect(IllegalArgumentException.class);
+		 Assignment.tree2prefix(tree);
 	 }
 
 	 @Test(timeout = 100)
@@ -360,6 +376,17 @@ public class AssignmentTest {
 	 }
 
 	 @Test(timeout = 100)
+	 public void testSubstitute_InvalidVariable() {
+		 LinkedBinaryTree<String> tree = Assignment.prefix2tree("* * a b * a b");
+
+		 thrown.expect(IllegalArgumentException.class);
+		 Assignment.substitute(tree, "1", 1);
+
+		 thrown.expect(IllegalArgumentException.class);
+		 Assignment.substitute(tree, "*", 1);
+	 }
+
+	 @Test(timeout = 100)
 	 public void testSubstitute_Simple() {
 		 LinkedBinaryTree<String> tree = Assignment.prefix2tree("* * a b * a b");
 
@@ -399,11 +426,33 @@ public class AssignmentTest {
 	 }
 
 	 @Test(timeout = 100)
-	 public void testSubstituteMap_SubstitueNull() {
+	 public void testSubstituteMap_InvalidMap() {
 		 LinkedBinaryTree<String> tree = Assignment.prefix2tree("* * a b * a b");
 		 HashMap<String, Integer> map = new HashMap<String, Integer>();
-		 map.put("a", 1);
-		 map.put("b", null);
+		 map.put("a", null);
+		 map.put("b", 2);
+
+		 thrown.expect(IllegalArgumentException.class);
+		 Assignment.substitute(tree, map);
+
+		 map = new HashMap<String, Integer>();
+		 map.put("*", 1);
+		 map.put("b", 2);
+
+ 		 thrown.expect(IllegalArgumentException.class);
+ 		 Assignment.substitute(tree, map);
+
+		 map = new HashMap<String, Integer>();
+		 map.put("1", 1);
+		 map.put("b", 2);
+
+		 thrown.expect(IllegalArgumentException.class);
+		 Assignment.substitute(tree, map);
+
+		 map = new HashMap<String, Integer>();
+		 map.put(null, 1);
+		 map.put("b", 2);
+
 		 thrown.expect(IllegalArgumentException.class);
 		 Assignment.substitute(tree, map);
 	 }
@@ -442,6 +491,12 @@ public class AssignmentTest {
 	 @Test(timeout = 100)
 	 public void testIsArithmeticExpression_Null() {
 		 assertFalse(Assignment.isArithmeticExpression(null));
+	 }
+
+	 @Test(timeout = 100)
+	 public void testIsArithmeticExpression_Empty() {
+		 LinkedBinaryTree<String> tree = new LinkedBinaryTree<String>();
+		 assertFalse(Assignment.isArithmeticExpression(tree));
 	 }
 
 	 @Test(timeout = 100)
