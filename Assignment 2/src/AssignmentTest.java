@@ -233,6 +233,11 @@ public class AssignmentTest {
 		 actual = Assignment.simplify(tree);
 		 expected = Assignment.prefix2tree("-1");
 		 assertTrue(Assignment.equals(actual, expected));
+
+		 tree = Assignment.prefix2tree("* 1 b");
+		 actual = Assignment.simplify(tree);
+		 expected = Assignment.prefix2tree("* 1 b");
+		 assertTrue(Assignment.equals(actual, expected));
 	 }
 
 	 @Test(timeout = 100)
@@ -387,6 +392,15 @@ public class AssignmentTest {
 	 }
 
 	 @Test(timeout = 100)
+	 public void testSubstitute_NoMatching() {
+		 LinkedBinaryTree<String> tree = Assignment.prefix2tree("* * a b * a b");
+
+		 LinkedBinaryTree<String> actual = Assignment.substitute(tree, "c", 3);
+		 LinkedBinaryTree<String> expected = Assignment.prefix2tree("* * a b * a b");
+		 assertTrue(Assignment.equals(actual, expected));
+	 }
+
+	 @Test(timeout = 100)
 	 public void testSubstitute_Simple() {
 		 LinkedBinaryTree<String> tree = Assignment.prefix2tree("* * a b * a b");
 
@@ -455,6 +469,18 @@ public class AssignmentTest {
 
 		 thrown.expect(IllegalArgumentException.class);
 		 Assignment.substitute(tree, map);
+	 }
+
+	 @Test(timeout = 100)
+	 public void testSubstituteMap_NoMatching() {
+		 LinkedBinaryTree<String> tree = Assignment.prefix2tree("* * a b * a b");
+		 HashMap<String, Integer> map = new HashMap<String, Integer>();
+		 map.put("c", 3);
+		 map.put("d", 4);
+
+		 LinkedBinaryTree<String> actual = Assignment.substitute(tree, map);
+		 LinkedBinaryTree<String> expected = Assignment.prefix2tree("* * a b * a b");
+		 assertTrue(Assignment.equals(actual, expected));
 	 }
 
 	 @Test(timeout = 100)

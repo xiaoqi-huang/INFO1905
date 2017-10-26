@@ -209,12 +209,12 @@ public class Assignment {
 
 	private static String tree2prefix(LinkedBinaryTree<String> tree, Position<String> root) throws IllegalArgumentException {
 		String element = root.getElement();
-		// If the element is an operator
-		if (isOperator(element)) {
-			return element + " " + tree2prefix(tree, tree.left(root)) + " " + tree2prefix(tree, tree.right(root));
-		}
 		// If the element is a value or variable, simply return it
-		return element;
+		if (!isOperator(element)) {
+			return element;
+		}
+		// If the element is an operator
+		return element + " " + tree2prefix(tree, tree.left(root)) + " " + tree2prefix(tree, tree.right(root));
 	}
 
 	/**
@@ -253,12 +253,12 @@ public class Assignment {
 
 	private static String tree2infix(LinkedBinaryTree<String> tree, Position<String> root) throws IllegalArgumentException {
 		String element = root.getElement();
-		// If the element is an operator
-		if (isOperator(element)) {
-			return "(" + tree2infix(tree, tree.left(root)) + element + tree2infix(tree, tree.right(root)) + ")";
-		}
 		// If the element is a value or variable, simply return it
-		return element;
+		if (!isOperator(element)) {
+			return element;
+		}
+		// If the element is an operator
+		return "(" + tree2infix(tree, tree.left(root)) + element + tree2infix(tree, tree.right(root)) + ")";
 	}
 
 	/**
@@ -288,23 +288,23 @@ public class Assignment {
 	private static LinkedBinaryTree<String> simplify(LinkedBinaryTree<String> tree, Position<String> root) throws IllegalArgumentException {
 		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
 
-		// When the root is internal, then it is a value or variable
-		// add it to the subtree and return the subtree
-		if (tree.isExternal(root)) {
+		// If the root is a variable or a value
+		if (!isOperator(root)) {
 			subtree.addRoot(root.getElement());
 			return subtree;
 		}
 
-		// When the root is internal
+		// If the root is an operator
 		LinkedBinaryTree<String> leftTree = simplify(tree, tree.left(root));
 		LinkedBinaryTree<String> rightTree = simplify(tree, tree.right(root));
-		// If leftTree and rightTree are simplified into two values, calculate it and add the result to the root
+		// If the simplified leftTree and rightTree have values in their roots,
+		// do calculation using the operator in the root
 		if (isInteger(leftTree.root()) && isInteger(rightTree.root())) {
 			String newElement = calculate(root, leftTree.root(), rightTree.root());
 			subtree.addRoot(newElement);
 			return subtree;
 		}
-		// Otherwise, attach leftTree and rightTree and return
+		// Otherwise, attach simplified leftTree and rightTree to the root
 		subtree.addRoot(root.getElement());
 		subtree.attach(subtree.root(), leftTree, rightTree);
 		return subtree;
@@ -345,7 +345,7 @@ public class Assignment {
 	private static LinkedBinaryTree<String> simplifyFancy(LinkedBinaryTree<String> tree, Position<String> root) throws IllegalArgumentException {
 		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
 
-		if (tree.isExternal(root)) {
+		if (!isOperator(root)) {
 			subtree.addRoot(root.getElement());
 			return subtree;
 		}
@@ -428,17 +428,22 @@ public class Assignment {
 
 	private static LinkedBinaryTree<String> substitute(LinkedBinaryTree<String> tree, Position<String> root, String variable, int value) throws IllegalArgumentException {
 		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
-
-		if (!isOperator(root)) {
+		// If the root is an integer, just return it
+		if (isInteger(root)) {
+			subtree.addRoot(root.getElement());
+			return subtree;
+		}
+		// If the root is a variable
+		if (isVariable(root)) {
+			// If the root equals to the variable, substitue it with the value
 			if (root.getElement().equals(variable)) {
-				String newElement = String.valueOf(value);
-				subtree.addRoot(newElement);
+				subtree.addRoot(String.valueOf(value));
 			} else {
 				subtree.addRoot(root.getElement());
 			}
 			return subtree;
 		}
-
+		// If the root is an operator, combine its substituted subtrees (call this method recursively)
 		LinkedBinaryTree<String> leftTree = substitute(tree, tree.left(root), variable, value);
 		LinkedBinaryTree<String> rightTree = substitute(tree, tree.right(root), variable, value);
 		subtree.addRoot(root.getElement());
@@ -477,22 +482,27 @@ public class Assignment {
 
 	private static LinkedBinaryTree<String> substitute(LinkedBinaryTree<String> tree, Position<String> root, HashMap<String, Integer> map) throws IllegalArgumentException {
 		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
-		
-		if (!isOperator(root)) {
+		// If the root is an integer, just return it
+		if (isInteger(root)) {
+			subtree.addRoot(root.getElement());
+			return subtree;
+		}
+		// If the root is a variable, iterate throught the map to find the value to replace the root
+		if (isVariable(root)) {
 			for (Entry<String, Integer> e : map.entrySet()) {
 				if ((e == null) || (e.getKey() == null) || (e.getValue() == null) || (!isVariable(e.getKey()))) {
 					throw new IllegalArgumentException();
 				}
 				if (root.getElement().equals(e.getKey())) {
-					String newElement = String.valueOf(e.getValue());
-					subtree.addRoot(newElement);
+					subtree.addRoot(String.valueOf(e.getValue()));
 					return subtree;
 				}
 			}
+			// If there is not an entry's key matching the root
 			subtree.addRoot(root.getElement());
 			return subtree;
 		}
-
+		// If the root is an operator, combine its substituted subtrees (call this method recursively)
 		LinkedBinaryTree<String> leftTree = substitute(tree, tree.left(root), map);
 		LinkedBinaryTree<String> rightTree = substitute(tree, tree.right(root), map);
 		subtree.addRoot(root.getElement());
@@ -527,18 +537,15 @@ public class Assignment {
 		if (tree.numChildren(root) == 1) {
 			return false;
 		}
-		// If a node is external, it must be a value or variable
+		// If a node is external, it must be a value or variable --> cannot be an operator
 		if (tree.isExternal(root)) {
-			if (isOperator(root)) {
-				return false;
-			}
-			return true;
+			return !isOperator(root);
 		}
 		// If a node is internal, it must be an operator
 		if (!isOperator(root)) {
 			return false;
 		}
-		// its subtrees should both be valid
+		// Both its subtrees should be valid
 		return isArithmeticExpression(tree, tree.left(root)) && isArithmeticExpression(tree, tree.right(root));
 	}
 }
