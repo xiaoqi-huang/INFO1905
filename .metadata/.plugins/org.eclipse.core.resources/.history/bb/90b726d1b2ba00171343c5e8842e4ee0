@@ -15,8 +15,8 @@ public class Assignment {
 		 return (element != null) && (element.equals("+") || element.equals("-") || element.equals("*"));
 	 }
 
-	 private static boolean isOperator(Position<String> node) {
-		 return (node != null) && isOperator(node.getElement());
+	 private static boolean isOperator(Position<String> p) {
+		 return (p != null) && isOperator(p.getElement());
 	 }
 
 	 private static boolean isInteger(String element) {
@@ -31,29 +31,29 @@ public class Assignment {
 		 }
 	 }
 
-	 private static boolean isInteger(Position<String> node) {
-		 return (node != null) && isInteger(node.getElement());
+	 private static boolean isInteger(Position<String> p) {
+		 return (p != null) && isInteger(p.getElement());
 	}
 
 	private static boolean isVariable(String element) {
 		return (element != null) && (!isOperator(element) && !isInteger(element));
 	}
 
-	private static boolean isVariable(Position<String> node) {
-		return (node != null) && isVariable(node.getElement());
+	private static boolean isVariable(Position<String> p) {
+		return (p != null) && isVariable(p.getElement());
 	}
 
-	private static String calculate(Position<String> node, Position<String> left, Position<String> right) {
+	private static String calculate(Position<String> root, Position<String> left, Position<String> right) {
  		int leftOperand = Integer.parseInt(left.getElement());
  		int rightOperand = Integer.parseInt(right.getElement());
 
- 		if (node.getElement().equals("+")) {
+ 		if (root.getElement().equals("+")) {
  			return String.valueOf(leftOperand + rightOperand);
  		}
-		if (node.getElement().equals("-")) {
+		if (root.getElement().equals("-")) {
 			return String.valueOf(leftOperand - rightOperand);
  		}
-		if (node.getElement().equals("*")) {
+		if (root.getElement().equals("*")) {
 			return String.valueOf(leftOperand * rightOperand);
  		}
 		return null;
@@ -207,14 +207,14 @@ public class Assignment {
 		return tree2prefix(tree, root);
 	}
 
-	private static String tree2prefix(LinkedBinaryTree<String> tree, Position<String> node) throws IllegalArgumentException {
-		String element = node.getElement();
+	private static String tree2prefix(LinkedBinaryTree<String> tree, Position<String> root) throws IllegalArgumentException {
+		String element = root.getElement();
 		// If the element is a value or variable, simply return it
 		if (!isOperator(element)) {
 			return element;
 		}
 		// If the element is an operator
-		return element + " " + tree2prefix(tree, tree.left(node)) + " " + tree2prefix(tree, tree.right(node));
+		return element + " " + tree2prefix(tree, tree.left(root)) + " " + tree2prefix(tree, tree.right(root));
 	}
 
 	/**
@@ -251,14 +251,14 @@ public class Assignment {
 		return tree2infix(tree, root);
 	}
 
-	private static String tree2infix(LinkedBinaryTree<String> tree, Position<String> node) throws IllegalArgumentException {
-		String element = node.getElement();
+	private static String tree2infix(LinkedBinaryTree<String> tree, Position<String> root) throws IllegalArgumentException {
+		String element = root.getElement();
 		// If the element is a value or variable, simply return it
 		if (!isOperator(element)) {
 			return element;
 		}
 		// If the element is an operator
-		return "(" + tree2infix(tree, tree.left(node)) + element + tree2infix(tree, tree.right(node)) + ")";
+		return "(" + tree2infix(tree, tree.left(root)) + element + tree2infix(tree, tree.right(root)) + ")";
 	}
 
 	/**
@@ -285,25 +285,27 @@ public class Assignment {
 		return simplify(tree, root);
 	}
 
-	private static LinkedBinaryTree<String> simplify(LinkedBinaryTree<String> tree, Position<String> node) throws IllegalArgumentException {
+	private static LinkedBinaryTree<String> simplify(LinkedBinaryTree<String> tree, Position<String> root) throws IllegalArgumentException {
 		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
-		// If the node is a variable or a value
-		if (!isOperator(node)) {
-			subtree.addRoot(node.getElement());
+
+		// If the root is a variable or a value
+		if (!isOperator(root)) {
+			subtree.addRoot(root.getElement());
 			return subtree;
 		}
-		// If the node is an operator
-		LinkedBinaryTree<String> leftTree = simplify(tree, tree.left(node));
-		LinkedBinaryTree<String> rightTree = simplify(tree, tree.right(node));
+
+		// If the root is an operator
+		LinkedBinaryTree<String> leftTree = simplify(tree, tree.left(root));
+		LinkedBinaryTree<String> rightTree = simplify(tree, tree.right(root));
 		// If the simplified leftTree and rightTree have values in their roots,
-		// do calculation using the operator in the node
+		// do calculation using the operator in the root
 		if (isInteger(leftTree.root()) && isInteger(rightTree.root())) {
-			String newElement = calculate(node, leftTree.root(), rightTree.root());
+			String newElement = calculate(root, leftTree.root(), rightTree.root());
 			subtree.addRoot(newElement);
 			return subtree;
 		}
-		// Otherwise, attach simplified leftTree and rightTree to the node
-		subtree.addRoot(node.getElement());
+		// Otherwise, attach simplified leftTree and rightTree to the root
+		subtree.addRoot(root.getElement());
 		subtree.attach(subtree.root(), leftTree, rightTree);
 		return subtree;
 	}
@@ -342,12 +344,12 @@ public class Assignment {
 
 	private static LinkedBinaryTree<String> simplifyFancy(LinkedBinaryTree<String> tree, Position<String> node) throws IllegalArgumentException {
 		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
-		// If the node is a variable or a value, add the element of the node to the subtree
+
 		if (!isOperator(node)) {
 			subtree.addRoot(node.getElement());
 			return subtree;
 		}
-		// Otherwise, call this method itself on both subtrees of the node
+
 		LinkedBinaryTree<String> leftTree = simplifyFancy(tree, tree.left(node));
 		LinkedBinaryTree<String> rightTree = simplifyFancy(tree, tree.right(node));
 
@@ -356,8 +358,8 @@ public class Assignment {
 			subtree.addRoot(newElement);
 			return subtree;
 		}
-		// 1 * x = x; x * 1 = x; 0 * x = 0; x * 0 = 0
-		if (node.getElement().equals("*")) {
+
+		if (root.getElement().equals("*")) {
 			if (leftTree.root().getElement().equals("1")) {
 				return rightTree;
 			}
@@ -369,8 +371,7 @@ public class Assignment {
 				return subtree;
 			}
 		}
-		// 0 + x = x; x + 0 = x
-		if (node.getElement().equals("+")) {
+		if (root.getElement().equals("+")) {
 			if (leftTree.root().getElement().equals("0")) {
 				return rightTree;
 			}
@@ -378,8 +379,7 @@ public class Assignment {
 				return leftTree;
 			}
 		}
-		// x - 0 = x; x - x = 0
-		if (node.getElement().equals("-")) {
+		if (root.getElement().equals("-")) {
 			if (rightTree.root().getElement().equals("0")) {
 				return leftTree;
 			}
@@ -428,14 +428,14 @@ public class Assignment {
 
 	private static LinkedBinaryTree<String> substitute(LinkedBinaryTree<String> tree, Position<String> node, String variable, int value) throws IllegalArgumentException {
 		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
-		// If the node is an integer, just return it
+		// If the root is an integer, just return it
 		if (isInteger(node)) {
 			subtree.addRoot(node.getElement());
 			return subtree;
 		}
-		// If the node is a variable
+		// If the root is a variable
 		if (isVariable(node)) {
-			// If the node equals to the variable, substitue it with the value
+			// If the root equals to the variable, substitue it with the value
 			if (node.getElement().equals(variable)) {
 				subtree.addRoot(String.valueOf(value));
 			} else {
@@ -443,7 +443,7 @@ public class Assignment {
 			}
 			return subtree;
 		}
-		// If the node is an operator, combine its substituted subtrees (call this method recursively)
+		// If the root is an operator, combine its substituted subtrees (call this method recursively)
 		LinkedBinaryTree<String> leftTree = substitute(tree, tree.left(node), variable, value);
 		LinkedBinaryTree<String> rightTree = substitute(tree, tree.right(node), variable, value);
 		subtree.addRoot(node.getElement());
@@ -482,14 +482,14 @@ public class Assignment {
 
 	private static LinkedBinaryTree<String> substitute(LinkedBinaryTree<String> tree, Position<String> node, HashMap<String, Integer> map) throws IllegalArgumentException {
 		LinkedBinaryTree<String> subtree = new LinkedBinaryTree<String>();
-		// If the node is an integer, just return it
+		// If the root is an integer, just return it
 		if (isInteger(node)) {
 			subtree.addRoot(node.getElement());
 			return subtree;
 		}
-		// If the node is a variable, use the node as the key to find the corresponding value in the map
+		// If the root is a variable, use the root as the key to find the corresponding value in the map
 		if (isVariable(node)) {
-			// If there is not an entry's key matching the node
+			// If there is not an entry's key matching the root
 			if (!map.containsKey(node.getElement())) {
 				subtree.addRoot(node.getElement());
 				return subtree;
@@ -502,7 +502,7 @@ public class Assignment {
 				return subtree;
 			}
 		}
-		// If the node is an operator, combine its substituted subtrees (call this method recursively)
+		// If the root is an operator, combine its substituted subtrees (call this method recursively)
 		LinkedBinaryTree<String> leftTree = substitute(tree, tree.left(node), map);
 		LinkedBinaryTree<String> rightTree = substitute(tree, tree.right(node), map);
 		subtree.addRoot(node.getElement());
