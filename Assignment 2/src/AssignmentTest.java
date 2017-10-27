@@ -248,7 +248,7 @@ public class AssignmentTest {
 		 assertTrue(Assignment.equals(actual, expected));
 	 }
 
-	 /* *************************************************************************
+    /* *************************************************************************
  	 * testSimplifyFancy
  	 * ************************************************************************* */
 	 @Test(timeout = 100)
@@ -446,29 +446,8 @@ public class AssignmentTest {
 		 map.put("a", null);
 		 map.put("b", 2);
 
-		 thrown.expect(IllegalArgumentException.class);
-		 Assignment.substitute(tree, map);
-
-		 map = new HashMap<String, Integer>();
-		 map.put("*", 1);
-		 map.put("b", 2);
-
  		 thrown.expect(IllegalArgumentException.class);
  		 Assignment.substitute(tree, map);
-
-		 map = new HashMap<String, Integer>();
-		 map.put("1", 1);
-		 map.put("b", 2);
-
-		 thrown.expect(IllegalArgumentException.class);
-		 Assignment.substitute(tree, map);
-
-		 map = new HashMap<String, Integer>();
-		 map.put(null, 1);
-		 map.put("b", 2);
-
-		 thrown.expect(IllegalArgumentException.class);
-		 Assignment.substitute(tree, map);
 	 }
 
 	 @Test(timeout = 100)
