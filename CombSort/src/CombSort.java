@@ -9,7 +9,9 @@ public class CombSort {
         while (!done || gap != 1) {
             done = true;
             gap = (int) (gap / 1.3);
-            if (gap < 1) {gap = 1;}
+            if (gap < 1) {
+                gap = 1;
+            }
             for (int i = 0; i + gap < list.size(); i++) {
 				if (list.get(i) > list.get(i + gap)) {
 					int temp = list.get(i);

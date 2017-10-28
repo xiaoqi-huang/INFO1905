@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="MergeSortTest" project="MergeSort" tests="8" started="8" failures="0" errors="0" ignored="0">
+  <testsuite name="MergeSortTest" time="0.489">
+    <testcase name="testSingleElement" classname="MergeSortTest" time="0.0"/>
+    <testcase name="testExtraLargeList" classname="MergeSortTest" time="0.02"/>
+    <testcase name="testShortList" classname="MergeSortTest" time="0.0"/>
+    <testcase name="testTies" classname="MergeSortTest" time="0.0"/>
+    <testcase name="testEmptyList" classname="MergeSortTest" time="0.001"/>
+    <testcase name="testLargeSortedList" classname="MergeSortTest" time="0.464"/>
+    <testcase name="testReversedList" classname="MergeSortTest" time="0.0"/>
+    <testcase name="testLargeList" classname="MergeSortTest" time="0.004"/>
+  </testsuite>
+</testrun>

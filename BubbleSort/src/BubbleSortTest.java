@@ -68,7 +68,7 @@ public class BubbleSortTest {
 	}
 
 	@Test
-	public void testLargeSortedList() {
+	public void testExtraExtraLargeList() {
 		List<Integer> values = new ArrayList<Integer>();
 		for (int i = 0; i < 1000000; i++) {
 			values.add(1000000 - i - 1);
