@@ -16,12 +16,9 @@
 <fullyQualifiedTypeName name="IntegerHashMap.HashMapEntry"/>
 <fullyQualifiedTypeName name="IntegerHashMap"/>
 <fullyQualifiedTypeName name="java.util.Map"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="textbook.Graph"/>
 <fullyQualifiedTypeName name="textbook.Vertex"/>
 <fullyQualifiedTypeName name="textbook.AdjacencyMapGraph"/>
-<fullyQualifiedTypeName name="java.util.List"/>
-<fullyQualifiedTypeName name="java.util.Arrays"/>
 <fullyQualifiedTypeName name="java.util.Collections"/>
 <fullyQualifiedTypeName name="java.util.PriorityQueue"/>
 <fullyQualifiedTypeName name="java.util.AbstractMap.SimpleEntry"/>
@@ -30,4 +27,7 @@
 <fullyQualifiedTypeName name="java.util.Map.Entry"/>
 <fullyQualifiedTypeName name="textbook.Position"/>
 <fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="java.util.Arrays"/>
+<fullyQualifiedTypeName name="java.util.List"/>
 </qualifiedTypeNameHistroy>
