@@ -49,6 +49,13 @@
 ### Weighted graphs and shortest paths
 - TravelDestinations
 
+### Sorting
+- BubbleSort
+- CocktailSort
+- CombSort
+- MergeSort
+- QuickSort
+
 ## Assignments
 ### Assignment 1
 ### Assignment 2
