@@ -71,7 +71,7 @@ public class CocktailSortTest {
 	public void testLargeSortedList() {
 		List<Integer> values = new ArrayList<Integer>();
 		for (int i = 0; i < 1000000; i++) {
-			values.add(30000 - i - 1);
+			values.add(1000000 - i - 1);
 		}
 		CocktailSort.sort(values);
 		for (int i = 0; i < 1000000; i++) {
