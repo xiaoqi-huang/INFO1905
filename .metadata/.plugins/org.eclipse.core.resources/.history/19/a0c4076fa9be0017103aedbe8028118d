@@ -1,0 +1,70 @@
+public class InPlaceHeapSort {
+
+	private static int getLeft(int index, int[] array) {
+		if (index < 0 || index >= array.length || (2 * index + 1) >= array.length) {
+            return -1;
+        }
+        return 2 * index + 1;
+	}
+
+	private static int getRight(int index, int[] array) {
+		if (index < 0 || index >= array.length || (2 * index + 1) >= array.length) {
+			return -1;
+		}
+		return 2 * index + 2;
+	}
+
+	private static int getParent(int index, int[] array) {
+		if (index <= 0 || index >= array.length || (2 * index + 1) >= array.length) {
+            return -1;
+        }
+		return (int) Math.floor((index - 1) / 2);
+	}
+
+	public static void heapify(int[] array) {
+		int tmp;
+		int leftIndex, rightIndex;
+        for (int i = array.length - 1; i > 0; i--) {
+			parentIndex = getParent(i, array);
+			if (parentIndex == -1) {
+				break;
+			}
+        	if (array[i] < array[parentIndex]) {
+				tmp = array[i];
+				array[i] = array[parentIndex];
+				array[parentIndex] = tmp;
+        	}
+        }
+    }
+
+	public static void heapSort(int[] array) {
+        //convert the array to a heap
+        heapify(array);
+
+		int tmp;
+		int leftIndex, rightIndex;
+
+		for (int i = 0; i < array.length; i++) {
+			tmp = array[0];
+			array[0] = array[array.length - i - 1];
+			array[array.length - i - 1] = tmp;
+
+	        for (int j = 0; j < array.length - i - 1; j++) {
+				leftIndex = getLeft(j, array);
+				rightIndex = getRight(j, array);
+	        	if (array[j] < array[leftIndex] && array[j] < array[rightIndex]) {
+	        		continue;
+	        	} else if (array[leftIndex] < array[rightIndex]) {
+	        		tmp = array[j];
+					array[j] = array[leftIndex];
+					array[leftIndex] = tmp;
+	        	} else {
+					tmp = array[j];
+					array[j] = array[rightIndex];
+					array[rightIndex] = tmp;
+				}
+	        }
+		}
+    }
+
+}

@@ -1,21 +1,21 @@
 public class ArrayHeapChecker {
 
     private static Integer getLeft(int index, Integer[] array) {
-        if (index < 0 || index > array.length || array[2 * index + 1] == null) {
+        if (index < 0 || index >= array.length || array[2 * index + 1] == null) {
             return -1;
         }
         return 2 * index + 1;
     }
 
     private static int getRight(int index, Integer[] array) {
-        if (index < 0 || index > array.length || array[2 * index + 2] == null) {
+        if (index < 0 || index >= array.length || array[2 * index + 2] == null) {
             return -1;
         }
         return 2 * index + 2;
     }
 
     private static int getParent(int index, Integer[] array) {
-        if (index < 0 || index > array.length || array[(index - 1) / 2] == null) {
+        if (index < 0 || index >= array.length || array[(index - 1) / 2] == null) {
             return -1;
         }
         return (int) Math.floor((index - 1) / 2);
