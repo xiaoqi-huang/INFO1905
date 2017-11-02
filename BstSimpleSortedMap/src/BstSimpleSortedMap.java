@@ -128,10 +128,8 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
 
   @Override
   public String put(Integer k, String v) {
-
     // If the key already exists, we will need to return the old value
     String oldValue = get(k);
-
     // Replace the subtree rooted at 'root' with
     // the resulting subtree after doing the put
     root = put(k, v, root);
@@ -148,7 +146,6 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
     	size++;
     	return e;
     }
-
     // base case: k matches the one in the current entry
     if(k.compareTo(subtreeRoot.getKey()) == 0) {
     	MySimpleEntry e = new MySimpleEntry(k, v);
@@ -158,15 +155,11 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
     }
     // recursive case: k < the current entry
     else if(k.compareTo(subtreeRoot.getKey()) < 0) {
-      // TODO: get the subtree resulting from recursing left
-      // TODO: attach that subtree to the current entry
     	attachLeft(subtreeRoot, put(k, v, subtreeRoot.getLeft()));
     	return subtreeRoot;
     }
     // recursive case: k > the current entry
     else {
-      // TODO: get the subtree resulting from recursing right
-      // TODO: attach that subtree to the current entry
     	attachRight(subtreeRoot, put(k, v, subtreeRoot.getRight()));
     	return subtreeRoot;
     }
@@ -180,12 +173,11 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
   }
 
   private MySimpleEntry remove(Integer k, MySimpleEntry subtreeRoot) {
-
-	  // No such entry
+	  // Base case: No such entry
 	  if (subtreeRoot == null) {
 		return null;
 	  }
-
+      // Base case: k matches the one in the current entry
 	  if (k.compareTo(subtreeRoot.getKey()) == 0) {
 		  size--;
 		  // two children
@@ -216,10 +208,12 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
 			  return subtreeRoot.getLeft();
 		  }
 	  }
+      // recursive case: k < the current entry
 	  else if (k.compareTo(subtreeRoot.getKey()) < 0) {
 		  attachLeft(subtreeRoot, remove(k, subtreeRoot.getLeft()));
 		  return subtreeRoot;
 	  }
+      // recursive case: k > the current entry
 	  else {
 		  attachRight(subtreeRoot, remove(k, subtreeRoot.getRight()));
 		  return subtreeRoot;
@@ -293,6 +287,9 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
 
   @Override
   public SimpleEntry ceilingEntry(Integer key) {
+      if (isEmpty()) {
+          return null;
+      }
       MySimpleEntry e = (MySimpleEntry) firstEntry();
       while (successor(e) != null) {
           if (e.getKey().compareTo(key) >= 0) {
@@ -300,23 +297,29 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
           }
           e = successor(e);
       }
-      return e;
+      return null;
   }
 
   @Override
   public SimpleEntry floorEntry(Integer key) {
+      if (isEmpty()) {
+          return null;
+      }
       MySimpleEntry e = (MySimpleEntry) firstEntry();
-      while (e.getKey().compareTo(key) <= 0 || successor(e) != null) {
+      while (e.getKey().compareTo(key) <= 0 && successor(e) != null) {
           if (successor(e).getKey().compareTo(key) > 0) {
               return e;
           }
           e = successor(e);
       }
-      return e;
+      return null;
   }
 
   @Override
   public SimpleEntry lowerEntry(Integer key) {
+      if (isEmpty()) {
+          return null;
+      }
       MySimpleEntry e = (MySimpleEntry) firstEntry();
       while (e.getKey().compareTo(key) < 0 && successor(e) != null) {
           if (successor(e).getKey().compareTo(key) >= 0) {
@@ -324,14 +327,17 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
           }
           e = successor(e);
       }
-      return e;
+      return null;
   }
 
   @Override
   public SimpleEntry higherEntry(Integer key) {
+      if (isEmpty()) {
+          return null;
+      }
       MySimpleEntry e = (MySimpleEntry) firstEntry();
       while (successor(e) != null) {
-          if (e.getKey().compareTo(key) >= 0) {
+          if (e.getKey().compareTo(key) > 0) {
               return e;
           }
           e = successor(e);
@@ -341,14 +347,17 @@ public class BstSimpleSortedMap implements SimpleSortedMap {
 
   @Override
   public Iterable<Integer> subMap(Integer fromKey, Integer toKey) {
-      MySimpleEntry e = (MySimpleEntry) firstEntry();
+      if (isEmpty()) {
+          return null;
+      }
       ArrayList<Integer> al = new ArrayList<Integer>();
-      while (e.getKey().compareTo(toKey) < 0 && successor(e) != null) {
+      MySimpleEntry e = (MySimpleEntry) firstEntry();
+      while (e != null && e.getKey().compareTo(toKey) < 0) {
           if (e.getKey().compareTo(fromKey) >= 0) {
               al.add(e.getKey());
           }
+          e = successor(e);
       }
       return al;
   }
-
 }
