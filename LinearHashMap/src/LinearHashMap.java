@@ -42,11 +42,11 @@ public class LinearHashMap<K, V> implements Map<K, V> {
     private void expand() {
         HashMapEntry<K, V>[] temp = this.items;
         this.items = (LinearHashMap<K, V>.HashMapEntry<K, V>[]) new LinearHashMap.HashMapEntry[items.length * 2];
-        int index = -1;
+        this.numberOfItems = 0;
+
         for (HashMapEntry<K, V> e : temp) {
             if (e != null && !isDefunct(e)) {
-                index = compress(hash(e.getKey()));
-                this.items[index] = e;
+                put(e.getKey(), e.getValue());
              }
          }
     }
@@ -118,15 +118,14 @@ public class LinearHashMap<K, V> implements Map<K, V> {
                     defunctIndex = index;
                 }
                 index++;
+                continue;
             }
             if (items[index].getKey().equals(key)) {
                 V oldValue = items[index].getValue();
                 items[index] = new HashMapEntry<K, V>(key, value);
                 return oldValue;
             }
-            if (!items[index].getKey().equals(key)) {
-                index++;
-            }
+            index++;
         }
         throw new RuntimeException("Table is full");
     }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="LinkedBinaryTreeTest" project="QuadraticHashMap" tests="9" started="9" failures="0" errors="0" ignored="0">
+  <testsuite name="QuadraticHashMapTest" time="0.0">
+    <testcase name="testSmallHashMap" classname="QuadraticHashMapTest" time="0.0"/>
+    <testcase name="testSize" classname="QuadraticHashMapTest" time="0.0"/>
+    <testcase name="testConstruction" classname="QuadraticHashMapTest" time="0.0"/>
+    <testcase name="testValueSet" classname="QuadraticHashMapTest" time="0.0"/>
+    <testcase name="testHashFunction_StringKey" classname="QuadraticHashMapTest" time="0.0"/>
+    <testcase name="testExpansion" classname="QuadraticHashMapTest" time="0.0"/>
+    <testcase name="testHashFunction_IntegerKey" classname="QuadraticHashMapTest" time="0.0"/>
+    <testcase name="testKeySet" classname="QuadraticHashMapTest" time="0.0"/>
+    <testcase name="testIsEmpty" classname="QuadraticHashMapTest" time="0.0"/>
+  </testsuite>
+</testrun>

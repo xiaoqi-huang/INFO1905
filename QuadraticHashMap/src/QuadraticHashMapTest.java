@@ -1,0 +1,227 @@
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+public class QuadraticHashMapTest<K, V> {
+
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
+
+	@Test
+	public void testConstruction() throws IllegalArgumentException {
+		QuadraticHashMap<Integer, V> qhm = new QuadraticHashMap<Integer, V>(5);
+
+		assertEquals(0, qhm.size());
+		assertTrue(qhm.isEmpty());
+
+		ArrayList<Integer> keySet = (ArrayList<Integer>)qhm.keySet();
+		assertTrue(keySet.isEmpty());
+		assertFalse(keySet.iterator().hasNext());
+
+		ArrayList<V> valueSet = (ArrayList<V>)qhm.values();
+		assertTrue(valueSet.isEmpty());
+		assertFalse(valueSet.iterator().hasNext());
+
+		ArrayList<Entry<Integer, V>> entrySet = (ArrayList<Entry<Integer, V>>)qhm.entrySet();
+		assertTrue(entrySet.isEmpty());
+		assertFalse(entrySet.iterator().hasNext());
+
+		assertNull(qhm.get(1));
+		assertNull(qhm.remove(1));
+
+		exception.expect(IllegalArgumentException.class);
+		qhm = new QuadraticHashMap<Integer, V>(4);
+	}
+
+	@Test
+	public void testSize() throws Exception {
+		QuadraticHashMap<Integer, String> qhm = new QuadraticHashMap<Integer, String>(5);
+
+		assertEquals(0, qhm.size());
+		qhm.put(1, "X");
+		assertEquals(1, qhm.size());
+		qhm.put(2, "Y");
+		assertEquals(2, qhm.size());
+		qhm.put(3, "Z");
+		assertEquals(3, qhm.size());
+		qhm.remove(1);
+		assertEquals(2, qhm.size());
+		qhm.remove(2);
+		assertEquals(1, qhm.size());
+		qhm.remove(3);
+		assertEquals(0, qhm.size());
+	}
+
+	@Test
+	public void testIsEmpty() throws Exception {
+		QuadraticHashMap<Integer, String> qhm = new QuadraticHashMap<Integer, String>(5);
+
+		assertTrue(qhm.isEmpty());
+		qhm.put(1, "X");
+		assertFalse(qhm.isEmpty());
+		qhm.put(2, "Y");
+		assertFalse(qhm.isEmpty());
+		qhm.put(3, "Z");
+		assertFalse(qhm.isEmpty());
+		qhm.remove(1);
+		assertFalse(qhm.isEmpty());
+		qhm.remove(2);
+		assertFalse(qhm.isEmpty());
+		qhm.remove(3);
+		assertTrue(qhm.isEmpty());
+	}
+
+	@Test
+	public void testSmallHashMap() throws Exception {
+		QuadraticHashMap<Integer, String> qhm = new QuadraticHashMap<Integer, String>(5);
+
+		qhm.put(1, "A");
+		qhm.put(2, "B");
+		qhm.put(3, "C");
+		assertEquals("A", qhm.get(1));
+		assertEquals("B", qhm.get(2));
+		assertEquals("C", qhm.get(3));
+
+		qhm.remove(2);
+		assertNull(qhm.get(2));
+
+		qhm.put(1, "D");
+		assertEquals("D", qhm.get(1));
+
+		qhm.put(100, "X");
+		assertEquals("X", qhm.get(100));
+
+		qhm.put(101, "Y");
+		assertEquals("Y", qhm.get(101));
+	}
+
+	@Test
+	public void testKeySet() throws Exception {
+		QuadraticHashMap<Integer, String> qhm = new QuadraticHashMap<Integer, String>(5);
+
+		qhm.put(1, "A");
+		qhm.put(2, "B");
+		qhm.put(3, "C");
+		List<Integer> expected = Arrays.asList(1, 2, 3);
+		List<Integer> actual = (List<Integer>) qhm.keySet();
+		Collections.sort(expected);
+		Collections.sort(actual);
+		assertEquals(expected, actual);
+
+		qhm.remove(2);
+		expected = Arrays.asList(1, 3);
+		actual = (List<Integer>) qhm.keySet();
+		Collections.sort(expected);
+		Collections.sort(actual);
+		assertEquals(expected, actual);
+
+		qhm.put(1, "D");
+		expected = Arrays.asList(1, 3);
+		actual = (List<Integer>) qhm.keySet();
+		Collections.sort(expected);
+		Collections.sort(actual);
+		assertEquals(expected, actual);
+
+		qhm.put(100, "X");
+		expected = Arrays.asList(100, 1, 3);
+		actual = (List<Integer>) qhm.keySet();
+		Collections.sort(expected);
+		Collections.sort(actual);
+		assertEquals(expected, actual);
+
+		qhm.put(101, "Y");
+		expected = Arrays.asList(100, 1, 101, 3);
+		actual = (List<Integer>) qhm.keySet();
+		Collections.sort(expected);
+		Collections.sort(actual);
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testValueSet() throws Exception {
+		QuadraticHashMap<Integer, String> qhm = new QuadraticHashMap<Integer, String>(5);
+
+		qhm.put(1, "A");
+		qhm.put(2, "B");
+		qhm.put(3, "C");
+		List<String> expected = Arrays.asList("A", "B", "C");
+		List<String> actual = (List<String>) qhm.values();
+		Collections.sort(expected);
+		Collections.sort(actual);
+		assertEquals(expected, actual);
+
+		qhm.remove(2);
+		expected = Arrays.asList("A", "C");
+		actual = (List<String>) qhm.values();
+		Collections.sort(expected);
+		Collections.sort(actual);
+		assertEquals(expected, actual);
+
+		qhm.put(1, "D");
+		expected = Arrays.asList("D", "C");
+		actual = (List<String>) qhm.values();
+		Collections.sort(expected);
+		Collections.sort(actual);
+		assertEquals(expected, actual);
+
+		qhm.put(100, "X");
+		expected = Arrays.asList("X", "D", "C");
+		actual = (List<String>) qhm.values();
+		Collections.sort(expected);
+		Collections.sort(actual);
+		assertEquals(expected, actual);
+
+		qhm.put(101, "Y");
+		expected = Arrays.asList("X", "D", "Y", "C");
+		actual = (List<String>) qhm.values();
+		Collections.sort(expected);
+		Collections.sort(actual);
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testHashFunction_StringKey() throws Exception {
+		QuadraticHashMap<String, String> qhm = new QuadraticHashMap<String, String>(5);
+
+		qhm.put("K", "V");
+		assertEquals("V", qhm.get("K"));
+	}
+
+	@Test
+	public void testHashFunction_IntegerKey() throws Exception {
+		QuadraticHashMap<Integer, String> qhm = new QuadraticHashMap<Integer, String>(5);
+
+		qhm.put(-3, "X");
+		assertEquals("X", qhm.get(-3));
+	}
+
+	@Test
+	public void testExpansion() throws Exception {
+		QuadraticHashMap<Integer, String> qhm = new QuadraticHashMap<Integer, String>(2);
+
+		qhm.put(0, "A");
+		qhm.put(1, "B");
+		qhm.put(2, "C");
+		qhm.put(3, "D");
+
+		assertEquals("A", qhm.get(0));
+		assertEquals("B", qhm.get(1));
+		assertEquals("C", qhm.get(2));
+		assertEquals("D", qhm.get(3));
+
+		assertEquals("A", qhm.remove(0));
+		assertEquals("B", qhm.remove(1));
+		assertEquals("C", qhm.remove(2));
+		assertEquals("D", qhm.remove(3));
+
+		assertEquals(0, qhm.size());
+		assertTrue(qhm.isEmpty());
+	}
+}
