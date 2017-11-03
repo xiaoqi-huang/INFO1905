@@ -13,14 +13,10 @@ public class IntegerHashMap<V> implements Map<Integer, V> {
         }
 
 		@Override
-		public Integer getKey() {
-			return key;
-		}
+		public Integer getKey() { return key; }
 
 		@Override
-		public V getValue() {
-			return value;
-		}
+		public V getValue() { return value; }
     }
 
     private HashMapEntry<Integer, V>[] items;
@@ -130,5 +126,4 @@ public class IntegerHashMap<V> implements Map<Integer, V> {
         }
 		return entries;
 	}
-
 }
