@@ -40,7 +40,7 @@ public class LinearHashMap<K, V> implements Map<K, V> {
 
     @SuppressWarnings("unchecked")
     private void expand() {
-        HashMapEntry<K, V>[] temp = this.items;
+        private HashMapEntry<K, V>[] temp = this.items;
         this.items = (LinearHashMap<K, V>.HashMapEntry<K, V>[]) new LinearHashMap.HashMapEntry[items.length * 2];
         int index = -1;
         for (HashMapEntry<K, V> e : temp) {
