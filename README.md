@@ -38,9 +38,11 @@
 
 ### Hashing and Sets
 - IntegerHashMap
+- SimpleHashMap
 - LinearHashMap
 - PhoneBook
 - ChainingHashMap
+- QuadraticHashMap
 
 ### Graphs
 - AdjacencyMapGraph
