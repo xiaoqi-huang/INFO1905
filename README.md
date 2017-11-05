@@ -45,7 +45,7 @@
 - QuadraticHashMap
 
 ### Graphs
-- AdjacencyMapGraph
+- TravelDestinations
 - AdjacencyMatrixGraph
 
 ### Weighted graphs and shortest paths
