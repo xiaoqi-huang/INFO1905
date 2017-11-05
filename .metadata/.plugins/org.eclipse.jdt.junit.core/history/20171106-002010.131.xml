@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="LinkedBinaryTreeTest" project="TravelDestinations" tests="7" started="7" failures="0" errors="0" ignored="0">
+  <testsuite name="TravelDestinationsTest" time="0.054">
+    <testcase name="testIsDirectFlight" classname="TravelDestinationsTest" time="0.0"/>
+    <testcase name="testGetReachableDestinations" classname="TravelDestinationsTest" time="0.0"/>
+    <testcase name="testCloserDestination" classname="TravelDestinationsTest" time="0.0"/>
+    <testcase name="testShortestPath" classname="TravelDestinationsTest" time="0.052"/>
+    <testcase name="testShortestPathCostFloydWarshall" classname="TravelDestinationsTest" time="0.0"/>
+    <testcase name="testGetDirectDestinations" classname="TravelDestinationsTest" time="0.001"/>
+    <testcase name="testShortestPathCost" classname="TravelDestinationsTest" time="0.001"/>
+  </testsuite>
+</testrun>

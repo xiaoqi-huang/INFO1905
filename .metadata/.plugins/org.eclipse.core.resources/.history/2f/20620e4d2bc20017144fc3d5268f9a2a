@@ -214,12 +214,12 @@ public class TravelDestinations {
 			for (Edge<Integer> flight : graph.outgoingEdges(origin)) {
 				Vertex<String> destination = graph.opposite(origin, flight);
 				if (distance.get(origin) < distance.get(destination) - flight.getElement()) {
+					// Dijkstra's optimisation
+					if (destination == from) {
+						return distance.get(origin) + flight.getElement();
+					}
 					updatePriorityQueue(pq, destination, distance.get(destination), distance.get(origin) + flight.getElement());
 					distance.put(destination, distance.get(origin) + flight.getElement());
-					// Dijkstra's optimisation
-					if (destination.getElement().equals(toCountry)) {
-						break;
-					}
 				}
 			}
 		}
@@ -263,18 +263,14 @@ public class TravelDestinations {
 		// 		}
 		// 	}
 		// }
-		Vertex<String> origin;
 		while (!pq.isEmpty() && pq.peek().getKey() != Integer.MAX_VALUE) {
-			origin = pq.poll().getValue();
+			Vertex<String> origin = pq.poll().getValue();
 			for (Edge<Integer> flight : graph.outgoingEdges(origin)) {
 				Vertex<String> destination = graph.opposite(origin, flight);
 				if (distance.get(origin) < distance.get(destination) - flight.getElement()) {
-					pq.add(new SimpleEntry<Integer, Vertex<String>>(distance.get(origin) + flight.getElement(), destination));
+					pq.add(new SimpleEntry<Integer, Vertex<String>>(distance.get(origin) + flight.getElement(), destination))
 					distance.put(destination, distance.get(origin) + flight.getElement());
 					previousVertex.put(destination, origin);
-					if (destination.getElement().equals(toCountry)) {
-						break;
-					}
 				}
 			}
 		}
