@@ -221,4 +221,31 @@ public class TravelDestinationsTest {
 		Collections.sort(actual);
 		assertEquals(expected, actual);
 	}
+
+	@Test
+	public void testShortestPathCostFloydWarshall() {
+		Graph<String, Integer> graph = new AdjacencyMapGraph<String, Integer>(true);
+		Vertex<String> a = graph.insertVertex("A");
+		Vertex<String> b = graph.insertVertex("B");
+		graph.insertEdge(a, b, 1);
+		TravelDestinations td = new TravelDestinations(graph);
+
+		assertEquals(1, td.shortestPathCostFloydWarshall("A", "B"));
+		assertEquals(Integer.MAX_VALUE, td.shortestPathCostFloydWarshall("B", "A"));
+
+		graph = new AdjacencyMapGraph<String, Integer>(true);
+		a = graph.insertVertex("A");
+		b = graph.insertVertex("B");
+		Vertex<String> c = graph.insertVertex("C");
+		Vertex<String> d = graph.insertVertex("D");
+		Vertex<String> e = graph.insertVertex("E");
+		graph.insertEdge(a, b, 2);
+		graph.insertEdge(a, c, 5);
+		graph.insertEdge(b, d, 3);
+		graph.insertEdge(c, d, 6);
+		graph.insertEdge(d, e, 9);
+		td = new TravelDestinations(graph);
+
+		assertEquals(14, td.shortestPathCostFloydWarshall("A", "E"));
+	}
 }

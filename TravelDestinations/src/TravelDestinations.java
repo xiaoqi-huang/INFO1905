@@ -16,6 +16,57 @@ public class TravelDestinations {
 		this.graph = graph;
 	}
 
+   /* **************************************************************************
+    * Helper Methods
+    * ************************************************************************** */
+
+	private Vertex<String> getVertex(String country) {
+		PositionalList<Vertex<String>> countries = (PositionalList<Vertex<String>>) this.graph.vertices();
+		if (countries.isEmpty()) {
+			return null;
+		}
+		for (Vertex<String> c : countries) {
+			if (c.getElement() == country) {
+				return c;
+			}
+		}
+		return null;
+	}
+
+	private void DFS(Graph<String, Integer> graph, Vertex<String> origin, ArrayList<Vertex<String>> visited) {
+		visited.add(origin);
+		for (Edge<Integer> e : graph.outgoingEdges(origin)) {
+			Vertex<String> toVisit = graph.opposite(origin, e);
+			if (!visited.contains(toVisit)) {
+				DFS(graph, toVisit, visited);
+			}
+		}
+	}
+
+	private void updatePriorityQueue(PriorityQueue<SimpleEntry<Integer, Vertex<String>>> pq, Vertex<String> country, Integer oldDistance, Integer newDistance) {
+		pq.remove(new SimpleEntry<Integer, Vertex<String>>(oldDistance, country));
+		pq.add(new SimpleEntry<Integer, Vertex<String>>(newDistance, country));
+	}
+
+	private List<String> getPath(ProbeHashMap<Vertex<String>, Vertex<String>> previousVertex, Vertex<String> origin, Vertex<String> destination) {
+		Stack<String> path = new Stack<String>();
+		Vertex<String> tmp = destination;
+		while (tmp != origin) {
+			path.push(tmp.getElement());
+			tmp = previousVertex.get(tmp);
+		}
+		ArrayList<String> reverse = new ArrayList<String>();
+		reverse.add(origin.getElement());
+		while (!path.isEmpty()) {
+			reverse.add(path.pop());
+		}
+		return reverse;
+	}
+
+	/* **************************************************************************
+     * Main Methods
+     * ************************************************************************** */
+
 	/**
 	 * Return all the countries that are a single direct flight away from the
 	 * given country, in any order. If no flights depart this country, return an
@@ -47,6 +98,10 @@ public class TravelDestinations {
 		return (this.graph.getEdge(origin, destination) != null);
 	}
 
+	/* ************************
+	 * Depth First Search (DFS)
+	 * ************************ */
+
 	/**
 	 * Return all the countries that are reachable from the given country, using
 	 * any number of flights (for example, if we can fly from A to B, then from
@@ -67,6 +122,10 @@ public class TravelDestinations {
 		}
 		return reachable;
 	}
+
+	/* *************************
+	 * Breath First Search (BFS)
+	 * ************************* */
 
 	/**
 	 * Return the country ('destinationA' or 'destinationB') which requires
@@ -110,7 +169,7 @@ public class TravelDestinations {
      */
 	public String cheapestDirectFlight(String fromCountry) {
 		Vertex<String> origin = getVertex(fromCountry);
-		if (origin == null) return null;
+		if (origin == null) { return null; }
 		Iterable<Edge<Integer>> flights = (Iterable<Edge<Integer>>) this.graph.outgoingEdges(origin);
 		Edge<Integer> cheapest = null;
 		for (Edge<Integer> e : flights) {
@@ -124,6 +183,10 @@ public class TravelDestinations {
 			return graph.opposite(origin, cheapest).getElement();
 		}
     }
+
+	/* ********************
+	 * Dijkstra's Algorithm
+	 * ******************** */
 
 	/**
      * Return the minimal cost to get to toCountry from fromCountry. If
@@ -163,6 +226,10 @@ public class TravelDestinations {
         return distance.get(to);
     }
 
+	/* ********************
+	 * Dijkstra's Algorithm
+	 * ******************** */
+
 	/**
      * Return a path which has the minimal cost to get to toCountry from
      * fromCountry. If fromCountry cannot be reached, then return null
@@ -170,9 +237,8 @@ public class TravelDestinations {
     public List<String> shortestPath(String fromCountry, String toCountry) {
 		Vertex<String> from = getVertex(fromCountry);
 		Vertex<String> to = getVertex(toCountry);
-		if (from == null || to == null) {
-			return null;
-		}
+		if (from == null || to == null) { return null; }
+
     	ProbeHashMap<Vertex<String>, Integer> distance = new ProbeHashMap<Vertex<String>, Integer>();
 		PriorityQueue<SimpleEntry<Integer, Vertex<String>>> pq = new PriorityQueue<SimpleEntry<Integer, Vertex<String>>>(Comparator.comparing(SimpleEntry::getKey));
 		ProbeHashMap<Vertex<String>, Vertex<String>> previousVertex = new ProbeHashMap<Vertex<String>, Vertex<String>>();
@@ -204,46 +270,54 @@ public class TravelDestinations {
 		}
     }
 
-	private Vertex<String> getVertex(String country) {
-		PositionalList<Vertex<String>> countries = (PositionalList<Vertex<String>>) this.graph.vertices();
-		if (countries.isEmpty()) {
-			return null;
+	/* **************
+	 * Floyd-Warshall
+	 * ************** */
+
+	public int shortestPathCostFloydWarshall(String fromCountry, String toCountry) {
+		Vertex<String> from = getVertex(fromCountry);
+		Vertex<String> to = getVertex(toCountry);
+		if (from == null || to == null) { return -1; }
+
+		List<Vertex<String>> vertices = new ArrayList<Vertex<String>>();
+		for(Vertex<String> v : graph.vertices()) {
+			vertices.add(v);
 		}
-		for (Vertex<String> c : countries) {
-			if (c.getElement() == country) {
-				return c;
+
+		int[][] distance = new int[graph.numVertices()][graph.numVertices()];
+		for (int i = 0; i < vertices.size(); i++) {
+			for (int j = 0; j < vertices.size(); j++) {
+				if (i == j) {
+					distance[i][j] = 0;
+				} else if (graph.getEdge(vertices.get(i), vertices.get(j)) == null) {
+					distance[i][j] = Integer.MAX_VALUE;
+				} else {
+					distance[i][j] = graph.getEdge(vertices.get(i), vertices.get(j)).getElement();
+				}
 			}
 		}
-		return null;
-	}
 
-	private void DFS(Graph<String, Integer> graph, Vertex<String> origin, ArrayList<Vertex<String>> visited) {
-		visited.add(origin);
-		for (Edge<Integer> e : graph.outgoingEdges(origin)) {
-			Vertex<String> toVisit = graph.opposite(origin, e);
-			if (!visited.contains(toVisit)) {
-				DFS(graph, toVisit, visited);
+		for (int i = 0; i < vertices.size(); i++) {
+			for (int j = 0; j < vertices.size(); j++) {
+				for (int k = 0; k < vertices.size(); k++) {
+					if (i != j && i != k && j != k) {
+						if (distance[i][k] < distance[i][j] - distance[k][j]) {
+							distance[i][j] = distance[i][k] + distance[k][j];
+						}
+					}
+				}
 			}
 		}
-	}
-
-	private void updatePriorityQueue(PriorityQueue<SimpleEntry<Integer, Vertex<String>>> pq, Vertex<String> country, Integer oldDistance, Integer newDistance) {
-		pq.remove(new SimpleEntry<Integer, Vertex<String>>(oldDistance, country));
-		pq.add(new SimpleEntry<Integer, Vertex<String>>(newDistance, country));
-	}
-
-	private List<String> getPath(ProbeHashMap<Vertex<String>, Vertex<String>> previousVertex, Vertex<String> origin, Vertex<String> destination) {
-		Stack<String> path = new Stack<String>();
-		Vertex<String> tmp = destination;
-		while (tmp != origin) {
-			path.push(tmp.getElement());
-			tmp = previousVertex.get(tmp);
+		int i = -1;
+		int j = -1;
+		for (int index = 0; index < vertices.size(); index++) {
+			if (vertices.get(index).getElement().equals(fromCountry)) {
+				i = index;
+			}
+			if (vertices.get(index).getElement().equals(toCountry)) {
+				j = index;
+			}
 		}
-		ArrayList<String> reverse = new ArrayList<String>();
-		reverse.add(origin.getElement());
-		while (!path.isEmpty()) {
-			reverse.add(path.pop());
-		}
-		return reverse;
+		return distance[i][j];
 	}
 }
