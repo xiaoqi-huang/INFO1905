@@ -1,4 +1,4 @@
-# INFO1905 :smiley:
+# INFO1905
 
 ## Tutorials
 ### Tools (Eclipse, JUnit, Interfaces, Debugging, Ed), Recursion
